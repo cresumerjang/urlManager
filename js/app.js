@@ -8,6 +8,9 @@ var oUrlManager = {
         nOrdStamp : 0,
         nTimeStamp : 0,
         nTimer : null
+        oConf : {
+            statusCallSec : 1000
+        }
     },
     fnInit : function(sInstanceID){
         fnSetCookie("user",sInstanceID);
@@ -83,7 +86,7 @@ var oUrlManager = {
                     how : null,
                     value : $(this).val()
                 });
-            },1000);
+            }, _that.g.oConf.statusCallSec);
         });
         $("input").on("keydown",function(e){console.log("keydown")
             clearTimeout(_that.g.nTimer);
