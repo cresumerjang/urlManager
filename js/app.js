@@ -46,7 +46,6 @@ var oUrlManager = {
                 404 : 'Requested page not found. [404]',
                 500 : 'Internal Server Error [500].',
                 503 : 'Service Unavailable [503].'
-                //504 : this.fnSetConnection(this._g.nOrdStamp, this._g.nTimeStamp)
             }[xhr.status];
         }
     },
@@ -66,6 +65,9 @@ var oUrlManager = {
             success : function(data){
                 var obj = jQuery.parseJSON(data);
                 this.fnDrawUi(obj);
+            },
+            error : function(){
+
             }
         });
     },
@@ -75,10 +77,9 @@ var oUrlManager = {
             clearTimeout(_that.g.nTimer);
             _that.g.nTimer = setTimeout(function(){
                 _that.fnSetStatus({
-                    // cookie 가없을경우는 없나?
                     who : fnGetCookie("user"),
                     where : $(this).attr("id"),
-                    what : "sfd",
+                    what : null, //modification status
                     how : null,
                     value : $(this).val()
                 });
@@ -89,10 +90,9 @@ var oUrlManager = {
         });
         $("input").on("focus",function(e){console.log("focus")
             _that.fnSetStatus({
-                // cookie 가없을경우는 없나?
                 who : fnGetCookie("user"),
                 where : $(this).attr("id"),
-                what : "sfd",
+                what : null, //modification status
                 how : null,
                 value : $(this).val()
             });
@@ -113,6 +113,6 @@ var oUrlManager = {
         field.val(oUi.value);
     },
     fnInitUi : function(){console.log("drawInit")
-        // UI 초기화를 위한 전역 UI멤버 선언
+        // UI 초기화를 위한 접근가능 UI멤버 선언
     }
 };
