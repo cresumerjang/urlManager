@@ -12,11 +12,20 @@ var oUrlManager = {
             statusCallSec : 1000
         }
     },
+    /**
+     * urlManager 초기화
+     * @param sInstanceID
+     */
     fnInit : function(sInstanceID){
         fnSetCookie("user",sInstanceID);
         this.fnSetConnection();
         this.fnEventBind();
     },
+    /**
+     * 롱폴링 구현을 위한 커넥션
+     * @param nOrdStamp
+     * @param nTimeStamp
+     */
     fnSetConnection : function(nOrdStamp, nTimeStamp){
         this.g.nOrdStamp = nOrdStamp || this.g.nOrdStamp;
         this.g.nTimeStamp = nTimeStamp || this.g.nTimeStamp;
@@ -27,12 +36,21 @@ var oUrlManager = {
             url : 'setConnection.php',
             data : queryString,
             context : this,
+            /**
+             * ajax 값 내려받은 후 내려받은 스템프를 매개변수로 재귀호출
+             * @param data
+             */
             success : function(data){
                 var obj = jQuery.parseJSON(data);
                 this.g.nOrdStamp = obj.nOrdStamp;
                 this.g.nTimeStamp = obj.nTimeStamp;
                 this.fnSetConnection(obj.nOrdStamp, obj.nTimeStamp);
             },
+            /**
+             * ajax 예외처리 504일 경우 즉시 재연결
+             * @param xhr
+             * @param status
+             */
             error : function(xhr, status){
                 if(status == "error" && xhr.status !== 504){
                     alert(this.fnErrorCatch(xhr));
@@ -52,6 +70,10 @@ var oUrlManager = {
             }[xhr.status];
         }
     },
+    /**
+     * 상태정보를 가져오기위한 ajax call
+     * @param htUiInfo
+     */
     fnSetStatus : function(htUiInfo){
         var queryString = {
             'who' : fnGetCookie("user"),
@@ -65,6 +87,10 @@ var oUrlManager = {
             url : 'setStatus.php',
             data : queryString,
             context : this,
+            /**
+             * 내려받은 값으로 UI 컨트롤
+             * @param data
+             */
             success : function(data){
                 var obj = jQuery.parseJSON(data);
                 this.fnDrawUi(obj);
@@ -76,7 +102,7 @@ var oUrlManager = {
     },
     fnEventBind : function(){
         var _that = this;
-        $("input").on("keyup",function(e){console.log("keyup")
+        $("input").on("keyup",function(e){
             clearTimeout(_that.g.nTimer);
             _that.g.nTimer = setTimeout(function(){
                 _that.fnSetStatus({
@@ -88,10 +114,10 @@ var oUrlManager = {
                 });
             }, _that.g.oConf.statusCallSec);
         });
-        $("input").on("keydown",function(e){console.log("keydown")
+        $("input").on("keydown",function(e){
             clearTimeout(_that.g.nTimer);
         });
-        $("input").on("focus",function(e){console.log("focus")
+        $("input").on("focus",function(e){
             _that.fnSetStatus({
                 who : fnGetCookie("user"),
                 where : $(this).attr("id"),
@@ -100,11 +126,15 @@ var oUrlManager = {
                 value : $(this).val()
             });
         });
-        $("input").on("blur",function(e) {console.log("blur")
+        $("input").on("blur",function(e) {
             _that.fnInitUi();
         });
     },
-    fnDrawUi : function(obj){console.log("draw")
+    /**
+     * 내려받은 status의 값으로 UI 조작
+     * @param obj
+     */
+    fnDrawUi : function(obj){
         var oUi = {
             who : obj.who,
             where : obj.where,
@@ -115,7 +145,10 @@ var oUrlManager = {
         var field = $('#'+oUi.where);
         field.val(oUi.value);
     },
-    fnInitUi : function(){console.log("drawInit")
+    /**
+     * 해당 사용자의 UI 초기화
+     */
+    fnInitUi : function(){
         // UI 초기화를 위한 접근가능 UI멤버 선언
     }
 };
