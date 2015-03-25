@@ -7,7 +7,7 @@ var oUrlManager = {
     g : {
         nOrdStamp : 0,
         nTimeStamp : 0,
-        nTimer : null
+        nTimer : null,
         oConf : {
             statusCallSec : 1000
         }
